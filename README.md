@@ -5,9 +5,9 @@ Reusable response helpers for Express APIs with integrated logging support — s
 
 # @ashkiani/express-responses
 
-Standardized HTTP response helpers for Express-based APIs with integrated logging.
+Reusable HTTP response helpers for Express APIs — with optional structured logging.
 
-This utility offers reusable response functions for common HTTP scenarios (e.g. 400, 401, 500) and ensures each response is logged with consistent structure. Useful in API services that include request/response auditing.
+This utility standardizes how your Express app sends JSON, text, and error responses. It also supports logging response details (e.g., status codes and payloads) when a log object is available.
 
 ---
 
@@ -27,21 +27,17 @@ npm install @ashkiani/express-responses
 const resUtils = require('@ashkiani/express-responses');
 ```
 
-2. Use inside your Express routes along with your logger:
+2. Use it in your route handlers:
 
 ```js
-app.get("/example", async (req, res) => {
+app.get("/api/example", async (req, res) => {
     const logEntry = {
-        requestId: 'abc123',
-        timestamp: new Date(),
-        response: {}
+        requestId: "abc123",
+        timestamp: new Date()
     };
 
     try {
-        // Do something...
-
-        await resUtils.sendJsonResponse(res, 200, { message: "Success" }, logEntry);
-
+        await resUtils.sendJsonResponse(res, 200, { message: "Success!" }, logEntry);
     } catch (err) {
         await resUtils.send500InternalError(res, logEntry);
     }
@@ -52,34 +48,42 @@ app.get("/example", async (req, res) => {
 
 ---
 
-## 📘 API
+## 📘 API Reference
 
-### `sendTextResponse(res, code, message, logEntry)`
+### `sendTextResponse(res, statusCode, message, logEntry?)`
 
-Sends a plain text response and appends response details to the `logEntry`.
+Sends plain text and, if a `logEntry` object is provided, logs the response.
 
-### `sendJsonResponse(res, code, jsonObj, logEntry)`
+### `sendJsonResponse(res, statusCode, jsonObj, logEntry?)`
 
-Sends a JSON response with the given status code and attaches log metadata.
+Sends JSON and logs it if a `logEntry` object is present.
 
-### `send204NoContent(res, logEntry)`
+### `send204NoContent(res, logEntry?)`
 
-Sends a 204 No Content response and updates the log.
+Sends a 204 No Content response.
 
-### Predefined Error Responses:
+---
 
-* `send400BadReq(res, logEntry)` – Bad Request
-* `send401UnAuth(res, logEntry)` – Unauthorized
-* `send500InternalError(res, logEntry)` – Internal Server Error
-* `send503ServiceUnavailable(res, logEntry)` – Service Unavailable
+### Predefined Error Responses
+
+These are convenience wrappers for common error statuses:
+
+| Function                      | Description                 |
+| ----------------------------- | --------------------------- |
+| `send400BadReq()`             | Bad Request (400)           |
+| `send401UnAuth()`             | Unauthorized (401)          |
+| `send500InternalError()`      | Internal Server Error (500) |
+| `send503ServiceUnavailable()` | Service Unavailable (503)   |
+
+Each function accepts `(res, logEntry?)` and safely logs the response if `logEntry` is provided.
 
 ---
 
 ## 💡 Notes
 
-* All functions expect a `logEntry` object. You can structure this object as needed, but it should at least contain a `response` field to be updated.
-* Designed to be used alongside a centralized logger (e.g. [@ashkiani/mongo-logger](https://www.npmjs.com/package/@ashkiani/mongo-logger)).
-* Helps standardize API responses and reduce duplication across services.
+* Logging is **optional**. If `logEntry` is omitted, the function still works without throwing errors.
+* These helpers work well with any logging system — just ensure your `logEntry` object includes a `response` field if you want to store response details.
+* Compatible with [@ashkiani/mongo-logger](https://www.npmjs.com/package/@ashkiani/mongo-logger) for full request-response auditing.
 
 ---
 
