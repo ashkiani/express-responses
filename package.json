@@ -1,0 +1,27 @@
+{
+  "name": "@ashkiani/express-responses",
+  "version": "1.0.0",
+  "description": "Reusable response helpers for Express APIs with integrated logging support — standardize your JSON/text replies and HTTP error handling with one module.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ashkiani/express-responses.git"
+  },
+  "keywords": [
+    "express",
+    "responses",
+    "http",
+    "logging",
+    "http-status",
+    "express-helper"
+  ],
+  "author": "Siavash Ashkiani",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ashkiani/express-responses/issues"
+  },
+  "homepage": "https://github.com/ashkiani/express-responses#readme"
+}
